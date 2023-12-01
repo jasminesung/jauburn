@@ -38,3 +38,16 @@ JbSamplePrograms class >> run: aString [
 
 	^ JbInterpreter new run: aString
 ]
+
+{ #category : #'sample programs' }
+JbSamplePrograms >> assignAndPrint [
+	"self run: self assignAndPrint"
+	^ 'var x = 19;
+	   print x;'
+]
+
+{ #category : #'as yet unclassified' }
+JbSamplePrograms >> inputNum [
+	"self run: self inputNum"
+	^ 'inputnum a;'
+]

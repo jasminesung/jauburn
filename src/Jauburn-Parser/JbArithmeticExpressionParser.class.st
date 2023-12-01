@@ -24,16 +24,22 @@ JbArithmeticExpressionParser class >> dependencies [
 { #category : #'non-terminals' }
 JbArithmeticExpressionParser >> arithmeticExpression [
 
-	^ arithmeticTerm , ('+' asParser trim , arithmeticTerm) star
-	  ==> [ :arr | 
-		  | current |
-		  current := arr first.
-		  arr second do: [ :pair | 
-			  current := JbAdditionNode new
+	^ arithmeticTerm , (('+' asParser trim / '-' asParser trim) , arithmeticTerm) star
+	  ==> [ :arr |
+		| current |
+		current := arr first.
+		arr second do: [ :pair |
+			pair first = '+' ifTrue: [current := JbAdditionNode new
 				             lhs: current;
 				             rhs: pair second;
-				             yourself ].
-		  current ]
+				             yourself].
+			pair first = '-' ifTrue: [current := JbSubtractionNode new
+				             lhs: current;
+				             rhs: pair second;
+				             yourself].
+			].
+		current
+		]
 ]
 
 { #category : #'non-terminals' }
@@ -47,14 +53,22 @@ JbArithmeticExpressionParser >> arithmeticFactor [
 { #category : #'non-terminals' }
 JbArithmeticExpressionParser >> arithmeticTerm [
 
-	^ arithmeticFactor , ($* asParser trim , arithmeticFactor) star
+	^ arithmeticFactor , (($* asParser trim / $/ asParser trim / $% asParser trim), arithmeticFactor) star
 	  ==> [ :arr | |current|
 		current := arr first.
 		arr second do: [ :pair |
-		  current := JbMultiplicationNode new
+			pair first = $* ifTrue: [current := JbMultiplicationNode new
 			  lhs: current;
 			  rhs: pair second
 			  yourself].
+			pair first = $/ ifTrue: [current := JbDivisionNode new
+			  lhs: current;
+			  rhs: pair second
+			  yourself].
+			pair first = $% ifTrue: [current := JbModulusNode new
+			  lhs: current;
+			  rhs: pair second
+			  yourself]].
 		current ]
 ]
 
@@ -78,7 +92,7 @@ JbArithmeticExpressionParser >> identifierExpression [
 { #category : #'non-terminals' }
 JbArithmeticExpressionParser >> numberExpression [
 
-	^ (self dependencyAt: JbNumberParser) integer ==> [ :n | 
+	^ (self dependencyAt: JbNumberParser) number ==> [ :n | 
 	  JbConstantExpressionNode new
 		  value: n;
 		  yourself ]
@@ -87,5 +101,5 @@ JbArithmeticExpressionParser >> numberExpression [
 { #category : #accessing }
 JbArithmeticExpressionParser >> start [ 
 
-	^arithmeticExpression 
+	^arithmeticExpression
 ]

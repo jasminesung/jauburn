@@ -6,3 +6,8 @@ Class {
 	#superclass : #PackageManifest,
 	#category : #'Jauburn-Interpreter-Manifest'
 }
+
+{ #category : #'code-critics' }
+ManifestJauburnInterpreter class >> ruleUnconditionalRecursionRuleV1FalsePositive [
+	^ #(#(#(#RGMethodDefinition #(#JbWhileBlockNode #executeWhileBody: #false)) #'2023-12-01T17:41:56.896636-05:00') )
+]

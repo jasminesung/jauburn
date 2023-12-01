@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'digitNotZero',
 		'digit',
-		'integer'
+		'number'
 	],
 	#category : #'Jauburn-Parser-Core'
 }
@@ -33,9 +33,16 @@ JbNumberParser >> integer [
 			==> [ :str | str asNumber ]
 ]
 
+{ #category : #'non-terminals' }
+JbNumberParser >> number [
+
+	^($- asParser optional, ((digitNotZero, digit star, $. asParser optional, digit star) / ($0 asParser, $. asParser, digit plus)) / $0 asParser) flatten 
+			==> [ :str | str asNumber ]
+]
+
 { #category : #accessing }
 JbNumberParser >> start [
 	"Answer the production to start this parser with."
 
-	^integer
+	^number
 ]

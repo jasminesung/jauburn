@@ -182,6 +182,70 @@ JbParserTest >> testIdentifierExpressionList [
 	self assert: (self parse: '' rule: #identifierExpressionList) size equals: 0
 ]
 
+{ #category : #'tests-statements' }
+JbParserTest >> testIfBlock [
+	| expression |
+	expression := self parse: 'if (x == 1) {
+	x = x + 1;
+	y = y - 5;
+	}' rule: #ifBlock.
+	self assert: expression condition operator equals: '=='.
+	self assert: expression body size equals: 2.
+	
+	expression := self parse: 'if (x <= 1) {}' rule: #ifBlock.
+	self assert: expression condition operator equals: '<='.
+	self assert: expression body size equals: 0.
+]
+
+{ #category : #'tests-statements' }
+JbParserTest >> testIfElseBlock [
+	| expression |
+	expression := self parse: 'if (x == 1) {
+	x = x + 1;
+	} else {
+	y = y - 5;
+	z = 2;
+	}' rule: #ifElseBlock.
+	self assert: expression condition operator equals: '=='.
+	self assert: expression ifBody size equals: 1.
+	self assert: expression elseBody size equals: 2.
+	
+	expression := self parse: 'if (x > 1) {
+	x = x + 1;
+	} else {    }' rule: #ifElseBlock.
+	self assert: expression condition operator equals: '>'.
+	self assert: expression ifBody size equals: 1.
+	self assert: expression elseBody size equals: 0.
+]
+
+{ #category : #'tests-statements' }
+JbParserTest >> testInputNumStatement [
+	| func |
+	func := self parse: 'inputnum a;' rule: #inputNumStatement.
+	self assert: func identifier equals: #a
+]
+
+{ #category : #'tests-statements' }
+JbParserTest >> testInvalidIfBlock [
+	self fail: 'if x == 1 { }' rule: #ifBlock
+]
+
+{ #category : #'tests-statements' }
+JbParserTest >> testInvalidIfElseBlock [
+	self fail: 'if (x == 1) x = x + 1; else {}' rule: #ifElseBlock
+]
+
+{ #category : #'tests-statements' }
+JbParserTest >> testInvalidInputNumStatement [
+	self fail: 'inputnum 45;' rule: #inputNumStatement.
+	self fail: 'inputnum "hello";' rule: #inputNumStatement.
+]
+
+{ #category : #'tests-statements' }
+JbParserTest >> testInvalidWhileBlock [
+	self fail: 'while a > b {}' rule: #whileBlock
+]
+
 { #category : #'tests-program' }
 JbParserTest >> testProgram [ 
 
@@ -257,4 +321,22 @@ JbParserTest >> testVariableDeclarationStatement [
 	self assert: stmt identifier equals: 'x'.
 	stmt := self parse: 'var monkey = 37*x;' rule: #variableDeclarationStatement.
 	self assert: stmt identifier equals: 'monkey'
+]
+
+{ #category : #'tests-statements' }
+JbParserTest >> testWhileBlock [
+	| expression |
+	expression := self parse: 'while(x < 5) {
+		x = x + 1;
+	}' rule: #whileBlock.
+	self assert: expression condition operator equals: '<'.
+	self assert: expression body size equals: 1.
+	
+	expression := self parse: 'while(x > y) {
+	
+	
+	}' rule: #whileBlock.
+	self assert: expression condition operator equals: '>'.
+	self assert: expression body size equals: 0.
+
 ]

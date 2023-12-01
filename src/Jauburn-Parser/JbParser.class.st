@@ -136,7 +136,13 @@ Class {
 		'stringComparisonExpression',
 		'booleanExpression',
 		'functionCallStatement',
-		'printStatement'
+		'printStatement',
+		'ifBlockStatement',
+		'ifElseBlockStatement',
+		'inputNumStatement',
+		'whileBlock',
+		'ifElseBlock',
+		'ifBlock'
 	],
 	#category : #'Jauburn-Parser-Core'
 }
@@ -285,6 +291,58 @@ JbParser >> identifierExpressionList [
 					result ] ]
 ]
 
+{ #category : #statements }
+JbParser >> ifBlock [
+
+	^ ('if' asParser , #space asParser) trim , '(' asParser trim, comparisonExpression
+	  , ')' asParser trim , statementBlock ==> [ :arr | 
+	  JbIfBlockNode new
+		  condition: arr third;
+		  body: arr fifth;
+		  yourself ]
+]
+
+{ #category : #statements }
+JbParser >> ifBlockStatement [
+
+	^ ('if' asParser , #space asParser) trim , '(' asParser trim, comparisonExpression
+	  , ')' asParser trim , statementBlock ==> [ :arr | 
+	  JbIfBlockNode new
+		  condition: arr third;
+		  body: arr fifth;
+		  yourself ]
+]
+
+{ #category : #statements }
+JbParser >> ifElseBlock [
+
+	^ ifBlockStatement, 'else' asParser trim, statementBlock  ==> [ :arr | 
+	  JbIfElseBlockNode new
+		  condition: arr first condition;
+		  ifBody: arr first body;
+		  elseBody: arr third;
+		  yourself ]
+]
+
+{ #category : #statements }
+JbParser >> ifElseBlockStatement [
+
+	^ ifBlockStatement, 'else' asParser trim, statementBlock  ==> [ :arr | 
+	  JbIfElseBlockNode new
+		  condition: arr first condition;
+		  ifBody: arr first body;
+		  elseBody: arr third;
+		  yourself ]
+]
+
+{ #category : #statements }
+JbParser >> inputNumStatement [
+
+	^ 'inputnum' asParser trim , identifier
+	  , ';' asParser trim
+	  ==> [ :arr | JbInputNumStatementNode new identifier: arr second ]
+]
+
 { #category : #'low-level' }
 JbParser >> keyword [ 
 
@@ -330,7 +388,8 @@ JbParser >> start [
 JbParser >> statement [
 
 	^ variableDeclarationStatement / assignmentStatement
-	  / returnStatement / functionCallStatement / printStatement
+	  / returnStatement / functionCallStatement / printStatement / ifElseBlock / ifBlock
+	  / whileBlock/ inputNumStatement
 ]
 
 { #category : #statements }
@@ -373,5 +432,16 @@ JbParser >> variableDeclarationStatement [
 	  JbVariableDeclarationStatementNode new
 		  identifier: arr second;
 		  expression: arr fourth;
+		  yourself ]
+]
+
+{ #category : #statements }
+JbParser >> whileBlock [
+
+	^ 'while' asParser trim , '(' asParser trim, comparisonExpression
+	  , ')' asParser trim , statementBlock ==> [ :arr | 
+	  JbWhileBlockNode new
+		  condition: arr third;
+		  body: arr fifth;
 		  yourself ]
 ]

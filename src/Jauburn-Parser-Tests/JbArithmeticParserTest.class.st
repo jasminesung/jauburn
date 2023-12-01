@@ -29,6 +29,22 @@ JbArithmeticParserTest >> testArithmeticExpression [
 	expression := self parse: 'a * b * c' rule: #arithmeticExpression.
 	self assertNode: expression rhs isIdentifier: 'c'.
 	self assertNode: expression isOperator: $*.
+	
+	expression := self parse: '15-13' rule: #arithmeticExpression.
+	self assertNode: expression isOperator: $-.
+	self assertNode: expression lhs isConstant: 15.
+	self assertNode: expression rhs isConstant: 13.
+	
+	
+	expression := self parse: '20 / 10' rule: #arithmeticExpression.
+	self assertNode: expression isOperator: $/.
+	self assertNode: expression lhs isConstant: 20.
+	self assertNode: expression rhs isConstant: 10.
+	
+	expression := self parse: '35 % 800' rule: #arithmeticExpression.
+	self assertNode: expression isOperator: $%.
+	self assertNode: expression lhs isConstant: 35.
+	self assertNode: expression rhs isConstant: 800.
 
 ]
 
@@ -41,7 +57,14 @@ JbArithmeticParserTest >> testArithmeticExpressionAssociativity [
 	self assertNode: expression lhs isOperator: $+.
 	self assertNode: expression rhs isConstant: 8.
 	self assertNode: expression lhs lhs isConstant: 3.
-	self assertNode: expression lhs rhs isConstant: 2
+	self assertNode: expression lhs rhs isConstant: 2.
+	
+	expression := self parse: '100 - 20 + 10' rule: #arithmeticExpression.
+	self assertNode: expression isOperator: $+.
+	self assertNode: expression lhs isOperator: $-.
+	self assertNode: expression lhs lhs isConstant: 100.
+	self assertNode: expression lhs rhs isConstant: 20.
+	self assertNode: expression rhs isConstant: 10.
 ]
 
 { #category : #tests }
@@ -60,6 +83,20 @@ JbArithmeticParserTest >> testArithmeticExpressionPrecedence [
 	self assertNode: expression rhs isConstant: 8.
 	self assertNode: expression lhs lhs isConstant: 3.
 	self assertNode: expression lhs rhs isConstant: 2.
+	
+	expression := self parse: '5-3/2' rule: #arithmeticExpression.
+	self assertNode: expression isOperator: $-.
+	self assertNode: expression lhs isConstant: 5.
+	self assertNode: expression rhs isOperator: $/.
+	self assertNode: expression rhs lhs isConstant: 3.
+	self assertNode: expression rhs rhs isConstant: 2.
+	
+	expression := self parse: '(5-3)%2' rule: #arithmeticExpression.
+	self assertNode: expression isOperator: $%.
+	self assertNode: expression lhs isOperator: $-.
+	self assertNode: expression lhs lhs isConstant: 5.
+	self assertNode: expression lhs rhs isConstant: 3.
+	self assertNode: expression rhs isConstant: 2.
 		
 ]
 
