@@ -24,7 +24,11 @@ JbParserTest >> testAnonymousFunctionDefinitionWithAssignment [
 		        parse: 'function(    ) {x = 22;}'
 		        rule: #anonymousFunctionExpression.
 	self assert: func body notEmpty.
-	self assert: func body first identifier equals: 'x'
+	self assert: func body first identifier equals: 'x'.
+	
+	func := self parse: 'function(a, b) {if (a) {if (b) {return true;} else {return false;}} else {return false;}}' rule: #anonymousFunctionExpression.
+	self assert: func parameters size equals: 2.
+	self assert: func body first condition identifier equals: #a.
 ]
 
 { #category : #'tests-expressions' }
@@ -195,6 +199,18 @@ JbParserTest >> testIfBlock [
 	expression := self parse: 'if (x <= 1) {}' rule: #ifBlock.
 	self assert: expression condition operator equals: '<='.
 	self assert: expression body size equals: 0.
+	
+	expression := self parse: 'if (true) {}' rule: #ifBlock.
+	self assert: expression condition value.
+	self assert: expression body size equals: 0.
+	
+	expression := self parse: 'if ("abc" == "def") {return 2;}' rule: #ifBlock.
+	self assert: expression condition operator equals: '=='.
+	self assert: expression body size equals: 1.
+	
+	expression := self parse: 'if (b) {return 2;}' rule: #ifBlock.
+	self assert: expression condition identifier equals: #b.
+	self assert: expression body size equals: 1.
 ]
 
 { #category : #'tests-statements' }
@@ -216,6 +232,13 @@ JbParserTest >> testIfElseBlock [
 	self assert: expression condition operator equals: '>'.
 	self assert: expression ifBody size equals: 1.
 	self assert: expression elseBody size equals: 0.
+	
+	expression := self parse: 'if (a) {if (b) {return true;} else {return false;}} else {return false;}' rule: #ifElseBlock.
+	self assert: expression condition identifier equals: #a.
+	self deny: expression elseBody first expression value.
+	self assert: expression ifBody first condition identifier equals: #b.
+	self assert: expression ifBody first ifBody first expression value.
+	self deny: expression ifBody first elseBody first expression value.
 ]
 
 { #category : #'tests-statements' }

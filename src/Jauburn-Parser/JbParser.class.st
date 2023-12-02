@@ -137,8 +137,6 @@ Class {
 		'booleanExpression',
 		'functionCallStatement',
 		'printStatement',
-		'ifBlockStatement',
-		'ifElseBlockStatement',
 		'inputNumStatement',
 		'whileBlock',
 		'ifElseBlock',
@@ -294,18 +292,7 @@ JbParser >> identifierExpressionList [
 { #category : #statements }
 JbParser >> ifBlock [
 
-	^ ('if' asParser , #space asParser) trim , '(' asParser trim, comparisonExpression
-	  , ')' asParser trim , statementBlock ==> [ :arr | 
-	  JbIfBlockNode new
-		  condition: arr third;
-		  body: arr fifth;
-		  yourself ]
-]
-
-{ #category : #statements }
-JbParser >> ifBlockStatement [
-
-	^ ('if' asParser , #space asParser) trim , '(' asParser trim, comparisonExpression
+	^ ('if' asParser , #space asParser) trim , '(' asParser trim, (comparisonExpression / booleanExpression / stringComparisonExpression / identifierExpression / functionCallExpression)
 	  , ')' asParser trim , statementBlock ==> [ :arr | 
 	  JbIfBlockNode new
 		  condition: arr third;
@@ -316,18 +303,7 @@ JbParser >> ifBlockStatement [
 { #category : #statements }
 JbParser >> ifElseBlock [
 
-	^ ifBlockStatement, 'else' asParser trim, statementBlock  ==> [ :arr | 
-	  JbIfElseBlockNode new
-		  condition: arr first condition;
-		  ifBody: arr first body;
-		  elseBody: arr third;
-		  yourself ]
-]
-
-{ #category : #statements }
-JbParser >> ifElseBlockStatement [
-
-	^ ifBlockStatement, 'else' asParser trim, statementBlock  ==> [ :arr | 
+	^ ifBlock, 'else' asParser trim, statementBlock  ==> [ :arr | 
 	  JbIfElseBlockNode new
 		  condition: arr first condition;
 		  ifBody: arr first body;

@@ -21,6 +21,22 @@ print 5*y;'
 ]
 
 { #category : #'sample programs' }
+JbSamplePrograms class >> gcd [
+
+	"self run: self gcd"
+	| num1 num2 |
+	num1 := UIManager default request: 'Enter the first number'.
+	num2 := UIManager default request: 'Enter the second number'.
+	^'var gcd = function(a, b) {
+	if (a == 0) {
+		return b;
+	}
+	return gcd(b % a, a);
+	};
+	print gcd(', num1, ', ', num2, ');'
+]
+
+{ #category : #'sample programs' }
 JbSamplePrograms class >> noFunctions [
 
 	"self run: self noFunctions"
@@ -36,18 +52,14 @@ JbSamplePrograms class >> run: aString [
 
 	"Look at sample programs for examples of using this method."
 
-	^ JbInterpreter new run: aString
+	^ JbInterpreter newWithStandardLibrary run: aString
 ]
 
 { #category : #'sample programs' }
-JbSamplePrograms >> assignAndPrint [
-	"self run: self assignAndPrint"
-	^ 'var x = 19;
-	   print x;'
-]
+JbSamplePrograms class >> sqrt [
 
-{ #category : #'as yet unclassified' }
-JbSamplePrograms >> inputNum [
-	"self run: self inputNum"
-	^ 'inputnum a;'
+	"self run: self sqrt"
+	| inputNum |
+	inputNum := UIManager default request: 'Enter a number'.
+	^'var result = sqrt(', inputNum, ');'
 ]

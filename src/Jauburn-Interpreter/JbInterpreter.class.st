@@ -14,52 +14,57 @@ Class {
 }
 
 { #category : #library }
-JbInterpreter class >> standardLibrary [
+JbInterpreter class >> newWithStandardLibrary [
+	| functions interpreter |
+	interpreter := self new.
+	functions := self standardLibrary.
+	interpreter interpret: functions.
+	^interpreter
+]
 
-| not and or abs sqrt |
-not := 'function not(b) {if (b) { return false;} else {return true;}}'.
-and := 'function and(a, b) {if (a) {if (b) {return true;} else {return false;}} else {return false;}'.
-or := 'function or(a, b) {if (a) {return true;} if (b) {return true;} else {return false;}'.
-abs := 'function abs(f) {if (f < 0) { return -1 * f;} else {return f;}}'.
-sqrt := 'function sqrt(x) {
+{ #category : #library }
+JbInterpreter class >> standardLibrary [
+^'var not = function(b) {if (b) { return false;} else {return true;}};
+var and = function(a, b) {if (a) {if (b) {return true;} else {return false;}} else {return false;}};
+var or = function(a, b) {if (a) {return true;} if (b) {return true;} else {return false;}};
+var abs = function(f) {if (f < 0) { return -1 * f;} else {return f;}};
+var sqrt = function(x) {
 			if (x == 0) {return x;}
 			if (x == 1) {return x;}
 			var i = 1;
 			var result = 1;
 			while (result <= x) {
 			i = i + 1;
-			result = i * 1;
+			result = i * i;
 			}
 			return i - 1;
-			}'.
-
-
+			};'
 ]
 
 { #category : #library }
 JbInterpreter class >> standardLibrary: functionName [
 
 | not and or abs sqrt |
-not := 'function not(b) {if (b) { return false;} else {return true;}}'.
-and := 'function and(a, b) {if (a) {if (b) {return true;} else {return false;}} else {return false;}'.
-or := 'function or(a, b) {if (a) {return true;} if (b) {return true;} else {return false;}'.
-abs := 'function abs(f) {if (f < 0) { return -1 * f;} else {return f;}}'.
-sqrt := 'function sqrt(x) {
+not := 'function(b) {if (b) { return false;} else {return true;}}'.
+and := 'function(a, b) {if (a) {if (b) {return true;} else {return false;}} else {return false;}}'.
+or := 'function(a, b) {if (a) {return true;} if (b) {return true;} else {return false;}}'.
+abs := 'function(f) {if (f < 0) { return -1 * f;} else {return f;}}'.
+sqrt := 'function(x) {
 			if (x == 0) {return x;}
 			if (x == 1) {return x;}
 			var i = 1;
 			var result = 1;
 			while (result <= x) {
 			i = i + 1;
-			result = i * 1;
+			result = i * i;
 			}
 			return i - 1;
 			}'.
-[functionName equals: 'not'] ifTrue: [^not].
-[functionName equals: 'and'] ifTrue: [^and].
-[functionName equals: 'or'] ifTrue: [^or].
-[functionName equals: 'abs'] ifTrue: [^abs].
-[functionName equals: 'sqrt'] ifTrue: [^sqrt].
+functionName = 'not' ifTrue: [^not].
+functionName = 'and' ifTrue: [^and].
+functionName = 'or' ifTrue: [^or].
+functionName = 'abs' ifTrue: [^abs].
+functionName = 'sqrt' ifTrue: [^sqrt].
 ]
 
 { #category : #accessing }

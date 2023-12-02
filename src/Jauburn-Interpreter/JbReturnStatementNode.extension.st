@@ -6,6 +6,5 @@ JbReturnStatementNode >> executeIn: environment [
 	result := expression evaluateIn: environment.
 	ex := JbReturnException new.
 	ex result: result.
-	Halt now.
 	ex signal: 'returning'.
 ]

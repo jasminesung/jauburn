@@ -138,11 +138,3 @@ JbInterpreterTest >> testInterpretWhileBlock [
 	self interpret: 'var x = 100; while (x < 5) {x = x + 1;}'.
 	self assert: (interpreter environment at: 'x') equals: 100.
 ]
-
-{ #category : #running }
-JbInterpreterTest >> testStandardLibrary [
-
-| notFunc |
-notFunc := JbInterpreter standardLibrary: 'not'.
-notFunc inspect.
-]
