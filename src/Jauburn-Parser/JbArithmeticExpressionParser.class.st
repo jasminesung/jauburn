@@ -10,7 +10,8 @@ Class {
 		'identifierExpression',
 		'identifier',
 		'arithmeticTerm',
-		'arithmeticFactor'
+		'arithmeticFactor',
+		'functionCallExpression'
 	],
 	#category : #'Jauburn-Parser-Core'
 }
@@ -18,13 +19,13 @@ Class {
 { #category : #accessing }
 JbArithmeticExpressionParser class >> dependencies [
 
-	^ { JbNumberParser }
+	^ { JbNumberParser. JbParser }
 ]
 
 { #category : #'non-terminals' }
 JbArithmeticExpressionParser >> arithmeticExpression [
 
-	^ arithmeticTerm , (('+' asParser trim / '-' asParser trim) , arithmeticTerm) star
+	^ arithmeticTerm, (('+' asParser trim / '-' asParser trim) , arithmeticTerm) star
 	  ==> [ :arr |
 		| current |
 		current := arr first.
@@ -46,14 +47,14 @@ JbArithmeticExpressionParser >> arithmeticExpression [
 JbArithmeticExpressionParser >> arithmeticFactor [
 
 	^ '(' asParser trim , arithmeticExpression , ')' asParser trim
-	  ==> [ :arr | arr second ] / numberExpression
+	  ==> [ :arr | arr second ] / functionCallExpression / numberExpression
 	   / identifierExpression
 ]
 
 { #category : #'non-terminals' }
 JbArithmeticExpressionParser >> arithmeticTerm [
 
-	^ arithmeticFactor , (($* asParser trim / $/ asParser trim / $% asParser trim), arithmeticFactor) star
+	^ arithmeticFactor, (($* asParser trim / $/ asParser trim / $% asParser trim), arithmeticFactor) star
 	  ==> [ :arr | |current|
 		current := arr first.
 		arr second do: [ :pair |
@@ -70,6 +71,12 @@ JbArithmeticExpressionParser >> arithmeticTerm [
 			  rhs: pair second
 			  yourself]].
 		current ]
+]
+
+{ #category : #'non-terminals' }
+JbArithmeticExpressionParser >> functionCallExpression [
+
+	^(self dependencyAt: JbParser) functionCallExpression
 ]
 
 { #category : #'non-terminals' }

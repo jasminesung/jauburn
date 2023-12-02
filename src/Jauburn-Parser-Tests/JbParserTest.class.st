@@ -268,7 +268,10 @@ var x = 2;'.
 JbParserTest >> testReturnStatement [
 	| func |
 	func := self parse: 'return 37;' rule: #returnStatement.
-	self assert: func expression value equals: 37
+	self assert: func expression value equals: 37.
+	
+	func := self parse: 'return 3*2;' rule: #returnStatement.
+	self assert: func expression operator equals: $*.
 ]
 
 { #category : #'tests-statements' }

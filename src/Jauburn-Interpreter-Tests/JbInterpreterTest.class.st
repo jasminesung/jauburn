@@ -46,6 +46,48 @@ JbInterpreterTest >> testDeclarationCreatesVariable [
 ]
 
 { #category : #running }
+JbInterpreterTest >> testInterpretArithmeticExpressions [
+
+	self interpret: 'var x = 6 % 3;'.
+	self assert: (interpreter environment at: 'x') equals: 0.
+	
+	self interpret: 'var x = 100 / 25;'.
+	self assert: (interpreter environment at: 'x') equals: 4.
+	
+	self interpret: 'var x = 300 - 100;'.
+	self assert: (interpreter environment at: 'x') equals: 200.
+]
+
+{ #category : #running }
+JbInterpreterTest >> testInterpretFunctionCallExpressions [
+	| result |
+	[self interpret: 'var f = function(x) { return x * 2; }; var y = 2 * f(3);'] on: JbReturnException do: [:ex | result := ex result].
+	self assert: (interpreter environment at: 'y') equals: 12.
+]
+
+{ #category : #running }
+JbInterpreterTest >> testInterpretFunctionCallStatement [
+	| result |
+	[self interpret: 'var y = 0; var f = function() { while (y < 10) { y = y + 1; } }; f();'] on: JbReturnException do: [:ex | result := ex result].
+	self assert: (interpreter environment at: 'y') equals: 10.
+]
+
+{ #category : #running }
+JbInterpreterTest >> testInterpretFunctionDefinitionNode [
+	| variableF additionNode |
+	self interpret: 'var f = function(a, b) {return a + b;};'.
+	variableF := interpreter environment at: 'f'.
+	self assert: variableF parameters size equals: 2.
+	self assert: variableF parameters first identifier equals: #a.
+	self assert: variableF parameters second identifier equals: #b.
+	self assert: variableF body size equals: 1.
+	additionNode := variableF body first expression.
+	self assert: additionNode lhs identifier equals: #a.
+	self assert: additionNode rhs identifier equals: #b.
+	self assert: additionNode operator equals: $+.
+]
+
+{ #category : #running }
 JbInterpreterTest >> testInterpretIfBlock [
 
 	self interpret: 'var x = 2; if (x == 1) {var y = 2;}'.
@@ -75,4 +117,32 @@ JbInterpreterTest >> testInterpretInputNumStatement [
 
 	self interpret: 'inputnum x;'.
 	self assert: (interpreter environment includesKey: 'x')
+]
+
+{ #category : #running }
+JbInterpreterTest >> testInterpretReturnStatement [
+	| result |
+	[self interpret: 'return 3;'] on: JbReturnException do: [:ex | result := ex result].
+	self assert: result equals: 3.
+	
+	[self interpret: 'return 3 + 2;'] on: JbReturnException do: [:ex | result := ex result].
+	self assert: result equals: 5.
+]
+
+{ #category : #running }
+JbInterpreterTest >> testInterpretWhileBlock [
+
+	self interpret: 'var x = 0; while (x < 5) {x = x + 1;}'.
+	self assert: (interpreter environment at: 'x') equals: 5.
+	
+	self interpret: 'var x = 100; while (x < 5) {x = x + 1;}'.
+	self assert: (interpreter environment at: 'x') equals: 100.
+]
+
+{ #category : #running }
+JbInterpreterTest >> testStandardLibrary [
+
+| notFunc |
+notFunc := JbInterpreter standardLibrary: 'not'.
+notFunc inspect.
 ]
