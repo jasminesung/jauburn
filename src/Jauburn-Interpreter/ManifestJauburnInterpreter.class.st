@@ -8,6 +8,11 @@ Class {
 }
 
 { #category : #'code-critics' }
+ManifestJauburnInterpreter class >> ruleBadMessageRule2V1FalsePositive [
+	^ #(#(#(#RGMethodDefinition #(#JbFunctionCallNode #evaluateIn: #false)) #'2023-12-02T17:23:02.341703-05:00') )
+]
+
+{ #category : #'code-critics' }
 ManifestJauburnInterpreter class >> ruleLongMethodsRuleV1FalsePositive [
 	^ #(#(#(#RGMethodDefinition #(#'JbInterpreter class' #standardLibrary: #true)) #'2023-12-02T13:46:45.604893-05:00') )
 ]

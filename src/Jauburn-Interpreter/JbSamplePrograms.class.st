@@ -33,7 +33,8 @@ JbSamplePrograms class >> gcd [
 	}
 	return gcd(b % a, a);
 	};
-	print gcd(', num1, ', ', num2, ');'
+	var result = gcd(', num1, ', ', num2, ');
+	print result;'
 ]
 
 { #category : #'sample programs' }
