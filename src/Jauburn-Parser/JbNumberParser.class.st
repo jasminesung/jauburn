@@ -27,13 +27,6 @@ JbNumberParser >> digitNotZero [
 ]
 
 { #category : #'non-terminals' }
-JbNumberParser >> integer [
-
-	^($- asParser optional , digitNotZero , digit star / $0 asParser) flatten 
-			==> [ :str | str asNumber ]
-]
-
-{ #category : #'non-terminals' }
 JbNumberParser >> number [
 
 	^($- asParser optional, ((digitNotZero, digit star, $. asParser optional, digit star) / ($0 asParser, $. asParser, digit plus)) / $0 asParser) flatten 

@@ -127,6 +127,9 @@ JbInterpreterTest >> testInterpretReturnStatement [
 	
 	[self interpret: 'return 3 + 2;'] on: JbReturnException do: [:ex | result := ex result].
 	self assert: result equals: 5.
+	
+	[self interpret: 'return "hello";'] on: JbReturnException do: [:ex | result := ex result].
+	self assert: result equals: 'hello'.
 ]
 
 { #category : #running }

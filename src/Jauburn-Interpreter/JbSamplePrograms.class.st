@@ -21,9 +21,20 @@ print 5*y;'
 ]
 
 { #category : #'sample programs' }
-JbSamplePrograms class >> gcd [
+JbSamplePrograms class >> noFunctions [
 
-	"self run: self gcd"
+	"self run: self noFunctions"
+
+	^ 'var x = 4;
+var y = 10 * x + 2;
+print y;
+'
+]
+
+{ #category : #'sample programs' }
+JbSamplePrograms class >> printGcd [
+
+	"self run: self printGcd"
 	| num1 num2 |
 	num1 := UIManager default request: 'Enter the first number'.
 	num2 := UIManager default request: 'Enter the second number'.
@@ -35,17 +46,6 @@ JbSamplePrograms class >> gcd [
 	};
 	var result = gcd(', num1, ', ', num2, ');
 	print result;'
-]
-
-{ #category : #'sample programs' }
-JbSamplePrograms class >> noFunctions [
-
-	"self run: self noFunctions"
-
-	^ 'var x = 4;
-var y = 10 * x + 2;
-print y;
-'
 ]
 
 { #category : #utilities }

@@ -41,32 +41,6 @@ var sqrt = function(x) {
 			};'
 ]
 
-{ #category : #library }
-JbInterpreter class >> standardLibrary: functionName [
-
-| not and or abs sqrt |
-not := 'function(b) {if (b) { return false;} else {return true;}}'.
-and := 'function(a, b) {if (a) {if (b) {return true;} else {return false;}} else {return false;}}'.
-or := 'function(a, b) {if (a) {return true;} if (b) {return true;} else {return false;}}'.
-abs := 'function(f) {if (f < 0) { return -1 * f;} else {return f;}}'.
-sqrt := 'function(x) {
-			if (x == 0) {return x;}
-			if (x == 1) {return x;}
-			var i = 1;
-			var result = 1;
-			while (result <= x) {
-			i = i + 1;
-			result = i * i;
-			}
-			return i - 1;
-			}'.
-functionName = 'not' ifTrue: [^not].
-functionName = 'and' ifTrue: [^and].
-functionName = 'or' ifTrue: [^or].
-functionName = 'abs' ifTrue: [^abs].
-functionName = 'sqrt' ifTrue: [^sqrt].
-]
-
 { #category : #accessing }
 JbInterpreter >> environment [ 
 
